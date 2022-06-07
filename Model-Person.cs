@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Mert.Models
 {
-    class Rehber
+    class Kişi
     {
         public string İsim { get; set; }
         public string Soyisim { get; set; }
         public string Numara { get; set; }
 
-        public Rehber()
+        public Kişi()
         {
             this.İsim = "xxx";
             this.Soyisim = "xxx";
