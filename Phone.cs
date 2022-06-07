@@ -1,39 +1,40 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Proje1-patika.Models;
+using Mert.Models;
 
-namespace Proje1-patika
+namespace Mert
 {
     class Telefon
     {
         static void Main(string[] args)
         {
-            Rehber Mert = new Rehber()
+            Kişi Mert = new Kişi()
             {
                 İsim = "mert",
                 Soyisim = "Dede",
                 Numara = "5394244221"
             };
-            Rehber Hüso = new Rehber()
+            Kişi Hüso = new Kişi()
             {
                 İsim = "hüso",
                 Soyisim = "Kara",
                 Numara = "5743433232"
             };
-            Rehber Semo = new Rehber()
+            Kişi Semo = new Kişi()
             {
                 İsim = "semih",
                 Soyisim = "Ak",
                 Numara = "5302932312"
             };
-            List<Rehber> rehber = new List<Rehber>();
-            rehber.Add(Mert);
-            rehber.Add(Hüso);
-            rehber.Add(Semo);
+            List<Kişi> kisiler = new List<Kişi>();
+            Rehber rehber = new Rehber();
+            kisiler.Add(Mert);
+            kisiler.Add(Hüso);
+            kisiler.Add(Semo);
+            rehber.kisiler = kisiler;
             int islem;
             bool check;
-            
 
             do
             {
@@ -51,7 +52,7 @@ namespace Proje1-patika
                 switch (islem)
                 {
                     case 1:
-                        Rehber yeniKisi = new Rehber();
+                        Kişi yeniKisi = new Kişi();
                         Console.Write("Lütfen isim giriniz: ");
                         yeniKisi.İsim = Console.ReadLine();
                         Console.Write("Lütfen soyisim giriniz: ");
@@ -59,25 +60,19 @@ namespace Proje1-patika
                         Console.Write("Lütfen numara giriniz: ");
                         yeniKisi.Numara = Console.ReadLine();
 
-                        rehber.Add(Kisiekle(yeniKisi));
-                        Console.WriteLine("Başarıyla Eklendi !");
+                        Kisiekle(yeniKisi, rehber);
                         break;
-
                     case 2:
                         Console.Write("Lütfen silmek istediğiniz kişinin ismini veya soyismini giriniz: ");
                         string kelime = Console.ReadLine();
-                        check = KisiKontrol(kelime,rehber);
+                        check = KisiKontrol(kelime, rehber);
                         if (check)
                         {
-                            Console.WriteLine("{0} isimli kişi silinmek üzere onaylıyor musunuz? (y/n):", KisiGetir(kelime,rehber).İsim);
+                            Console.WriteLine("{0} isimli kişi silinmek üzere onaylıyor musunuz? (y/n):", KisiGetir(kelime, rehber).İsim);
                             string answer = Console.ReadLine();
                             if (answer == "y")
                             {
-                                bool result = KisiSil(kelime, rehber);
-                                if (result)
-                                    Console.WriteLine("Başarıyla Silindi !");
-                                else
-                                    Console.WriteLine("Silinemedi.");
+                                KisiSil(kelime, rehber);
                             }
                             else if (answer == "n")
                                 break;
@@ -97,7 +92,6 @@ namespace Proje1-patika
                                 break;
                             else if (answer1 == "2")
                                 goto case 2;
-
                         }
                         break;
                     case 3:
@@ -106,14 +100,13 @@ namespace Proje1-patika
                         check = KisiKontrol(güncel, rehber);
                         if (check)
                         {
-                            Console.WriteLine("{0} isimli kişi güncellemek üzere onaylıyor musunuz? (y/n):", KisiGetir(güncel,rehber).İsim);
+                            Console.WriteLine("{0} isimli kişi güncellemek üzere onaylıyor musunuz? (y/n):", KisiGetir(güncel, rehber).İsim);
                             string answer = Console.ReadLine();
                             if (answer == "y")
                             {
                                 Console.Write("Yeni numara: ");
                                 string yeni_numara = Console.ReadLine();
-                                if (KisiGüncelle(güncel, rehber, yeni_numara))
-                                    Console.WriteLine("Başarıyla Güncellendi !");
+                                KisiGüncelle(güncel, rehber, yeni_numara);
                             }
                             else if (answer == "n")
                                 break;
@@ -137,102 +130,103 @@ namespace Proje1-patika
                         break;
                     case 4:
                         Console.WriteLine("Telefon Rehberi");
-                        foreach (var item in rehber)
+                        foreach (var item in rehber.kisiler)
                         {
-                            Console.WriteLine("İsim: {0}\n"
-                                + "Soyisim: {1}\n"
+                            Console.WriteLine("İsim Soyisim: {0} {1}\n"
                                 + "Numara: {2} \n"
-                                + "*********", item.İsim, item.Soyisim, item.Numara);
+                                + "----------", item.İsim, item.Soyisim, item.Numara);
                         }
-
                         break;
                     case 5:
                         Console.WriteLine("Arama yapmak istediğiniz tipi seçin \n" + "*******************\n"
                             + "İsim veya soyisime göre arama yapmak için: (1)\n"
                             + "Telefon numarasına göre arama yapmak için: (2)");
                         char islem1 = Convert.ToChar(Console.ReadLine());
-                        Rehber person = new Rehber();
-                        if (islem1 == Convert.ToChar("1"))
-                        {
-                            Console.Write("Lütfen isim veya soyisim giriniz: ");
-                            string kisiismi = Console.ReadLine();
-                            person = KisiGetir(kisiismi, rehber);
-                            Console.WriteLine("İsim: {0} \n" + "Soyisim: {1}\n" + "Numara: {2}", person.İsim, person.Soyisim, person.Numara);
-                            break;
-                        }
-                        else if (islem1 == Convert.ToChar("2"))
-                        {
-                            Console.Write("Lütfen telefon numarası giriniz: ");
-                            string kisinumarası = Console.ReadLine();
-                            person = KisiGetir(kisinumarası, rehber);
-                            Console.WriteLine("İsim: {0} \n" + "Soyisim: {1}\n" + "Numara: {2}", person.İsim, person.Soyisim, person.Numara);
-                            break;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Lütfen geçerli bir cevap veriniz. İşlem Yapılmadı.");
-                            break;
-                        }
+                        KisiGetir(islem1, rehber);
                         break;
-
-                        
                 }
             } while (islem != 6);
         }
 
-        public static Rehber Kisiekle(Rehber kisi)
-        {
-            Rehber yenikisi = new Rehber();
-            yenikisi.İsim = kisi.İsim;
-            yenikisi.Soyisim = kisi.Soyisim;
-            yenikisi.Numara = kisi.Numara;
-            return yenikisi;
-        }
-
-        public static bool KisiSil(string kelime, List<Rehber> rehberListesi)
+        public static void Kisiekle(Kişi kisi, Rehber rehber)
         {
             try
             {
-
-                rehberListesi.Remove(rehberListesi.FirstOrDefault(a => a.İsim == kelime || a.Soyisim == kelime));
-                return true;
+                Kişi yenikisi = new Kişi();
+                yenikisi.İsim = kisi.İsim;
+                yenikisi.Soyisim = kisi.Soyisim;
+                yenikisi.Numara = kisi.Numara;
+                rehber.kisiler.Add(yenikisi);
+                Console.WriteLine("Başarıyla Eklendi !");
             }
             catch
             {
-                return false;
+                Console.WriteLine("Yeni kişi eklenemedi.");
+            }
+        }
+
+        public static void KisiSil(string kelime, Rehber rehberListesi)
+        {
+            try
+            {
+                rehberListesi.kisiler.Remove(rehberListesi.kisiler.FirstOrDefault(a => a.İsim == kelime || a.Soyisim == kelime));
+                Console.WriteLine("Başarıyla Silindi !");
+            }
+            catch
+            {
+                Console.WriteLine("Silinemedi.");
             }
 
 
         }
 
-        public static bool KisiKontrol(string kelime, List<Rehber> rehberListesi)
+        public static bool KisiKontrol(string kelime, Rehber rehber)
         {
-            bool result = rehberListesi.Any(a => a.İsim == kelime || a.Soyisim == kelime);
+            bool result = rehber.kisiler.Any(a => a.İsim == kelime || a.Soyisim == kelime);
             if (result)
                 return true;
             else
                 return false;
         }
-        public static Rehber KisiGetir(string kelime,List<Rehber> rehberListesi)
+        public static Kişi KisiGetir(string kelime, Rehber rehber)
         {
-            Rehber result = rehberListesi.FirstOrDefault(a => a.İsim == kelime || a.Soyisim == kelime ||a.Numara==kelime);
+            Kişi result = rehber.kisiler.FirstOrDefault(a => a.İsim == kelime || a.Soyisim == kelime || a.Numara == kelime);
             return result;
         }
-
-        public static bool KisiGüncelle(string kelime, List<Rehber> rehberListesi,string numara)
+        public static void KisiGetir(char option, Rehber rehber)
         {
-            Rehber result = rehberListesi.FirstOrDefault(a => a.İsim == kelime || a.Soyisim == kelime);
+            Kişi kisi = new Kişi();
+            switch (option)
+            {
+                case '1':
+                    Console.Write("Lütfen isim veya soyisim giriniz: ");
+                    string kisiismi = Console.ReadLine();
+                    kisi = rehber.kisiler.FirstOrDefault(a => a.İsim == kisiismi || a.Soyisim == kisiismi);
+                    break;
+                case '2':
+                    Console.Write("Lütfen telefon numarası giriniz: ");
+                    string kisinumarası = Console.ReadLine();
+                    kisi = rehber.kisiler.FirstOrDefault(a => a.Numara == kisinumarası);
+                    break;
+                default:
+                    Console.WriteLine("Lütfen geçerli bir cevap veriniz. İşlem Yapılmadı.");
+                    break;
+            }
+            Console.WriteLine("İsim: {0} \n" + "Soyisim: {1}\n" + "Numara: {2}", kisi.İsim, kisi.Soyisim, kisi.Numara);
+        }
+
+        public static void KisiGüncelle(string kelime, Rehber rehber, string numara)
+        {
+            Kişi result = rehber.kisiler.FirstOrDefault(a => a.İsim == kelime || a.Soyisim == kelime);
             try
             {
                 result.Numara = numara;
-                return true;
+                Console.WriteLine("Başarıyla Güncellendi !");
             }
             catch
             {
-                return false;
+                Console.WriteLine("HATA !");
             }
-
         }
-
     }
 }
